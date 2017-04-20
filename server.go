@@ -18,5 +18,5 @@ func startServer() {
 	log.Println("API Key set to: " + key)
 	log.Println("Server is running on " + ip + ":" + port + "\nExit with Ctrl-C")
 
-	http.ListenAndServe(ip+":"+port, nil)
+	panic(http.ListenAndServe(ip+":"+port, nil))
 }
