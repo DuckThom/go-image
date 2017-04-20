@@ -1,16 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"github.com/google/uuid"
+	"log"
 )
 
 func startServer() {
-	fmt.Println("Starting server...")
+	log.Println("Starting server...")
 
 	http.HandleFunc("/", handleConnection)
 
-	fmt.Println("Server is running on " + ip + ":" + port + "\nExit with Ctrl-C")
+	if key == "random" {
+		key = uuid.New().String()
+	}
+
+	log.Println("API Key set to: " + key)
+	log.Println("Server is running on " + ip + ":" + port + "\nExit with Ctrl-C")
 
 	http.ListenAndServe(ip+":"+port, nil)
 }

@@ -16,6 +16,7 @@ import (
 
 // Determine which handler needs to be used
 func handleConnection(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method != "POST" && r.FormValue("id") == "" {
 		w.WriteHeader(200)
 		io.WriteString(w, "To upload, make a POST request with the file attached in the 'image' field\n")
@@ -75,6 +76,15 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 // Handle POST (file upload) requests
 func handlePost(w http.ResponseWriter, r *http.Request) {
 	var err error
+
+	if key != "" {
+		if key != r.PostFormValue("key") {
+			w.WriteHeader(400)
+			io.WriteString(w, "Invalid API key")
+
+			return
+		}
+	}
 
 	if strings.Index(r.Header.Get("Content-Type"), "multipart/form-data") != 0 {
 		w.WriteHeader(400)
