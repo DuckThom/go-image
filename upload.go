@@ -14,6 +14,9 @@ import (
 	"github.com/google/uuid"
 )
 
+var returnJson bool
+var returnText bool
+
 // Determine which handler needs to be used
 func handleConnection(w http.ResponseWriter, r *http.Request) {
 
@@ -23,6 +26,19 @@ func handleConnection(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "To view, make a GET request with the file id in the 'id' parameter")
 
 		return
+	}
+
+	accept := r.Header.Get("Accept")
+
+	if accept == "application/json" {
+		returnText = false
+		returnJson = true
+	} else if accept == "text/plain" {
+		returnJson = false
+		returnText = true
+	} else {
+		returnJson = true
+		returnText = false
 	}
 
 	if r.Method == "POST" {
@@ -39,8 +55,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 
 	if id == "" {
-		w.WriteHeader(400)
-		io.WriteString(w, "Invalid 'id' parameter")
+		response(w, "Invalid 'id' parameter", 400)
 
 		return
 	}
@@ -79,16 +94,14 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	if key != "" {
 		if key != r.PostFormValue("key") {
-			w.WriteHeader(400)
-			io.WriteString(w, "Invalid API key")
+			response(w, "Invalid API key",  400)
 
 			return
 		}
 	}
 
 	if strings.Index(r.Header.Get("Content-Type"), "multipart/form-data") != 0 {
-		w.WriteHeader(400)
-		io.WriteString(w, "Please set the Content-Type to multipart/form-data")
+		response(w, "Please set the Content-Type to multipart/form-data", 400)
 
 		return
 	}
@@ -171,7 +184,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Return the UUID filename to the client
-	w.Write([]byte(filename.String()))
+	response(w, filename.String(), 200)
 
 	return
 }
