@@ -12,7 +12,7 @@ func response(w http.ResponseWriter, message string, code int) {
 	var link string
 
 	if code == 200 {
-		link = "http://" + host + "/?id=" + message
+		link = "http://" + host + ":" + port + "/?id=" + message
 	}
 
 	if returnJson {
@@ -23,7 +23,7 @@ func response(w http.ResponseWriter, message string, code int) {
 	}
 
 	if returnText {
-		data = []byte(message)
+		data = []byte(message + "\n" + link)
 	}
 
 	if err != nil {

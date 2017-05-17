@@ -38,8 +38,13 @@ func handleConnection(w http.ResponseWriter, r *http.Request) {
 		returnJson = false
 		returnText = true
 	} else {
-		returnJson = true
-		returnText = false
+		if returnFormat == "json" {
+			returnJson = true
+			returnText = false
+		} else if returnFormat == "plain" {
+			returnJson = false
+			returnText = true
+		}
 	}
 
 	if r.Method == "POST" {
