@@ -9,10 +9,16 @@ import (
 func response(w http.ResponseWriter, message string, code int) {
 	var data []byte
 	var err error
+	var link string
+
+	if code == 200 {
+		link = "http://" + host + "/?id=" + message
+	}
 
 	if returnJson {
 		data, err = json.Marshal(map[string]string{
 			"payload": message,
+			"link": link,
 		})
 	}
 
